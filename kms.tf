@@ -12,14 +12,27 @@ resource "aws_kms_key_policy" "symmetric" {
   policy = jsonencode({
     Statement = [
       {
-        Action = "kms:*"
+        Sid    = "Enable only myself to do everything"
         Effect = "Allow"
         Principal = {
-          AWS = "*"
+          AWS = "arn:aws:iam::${var.kk_iam_user_arn}"
         }
-
+        Action   = "kms:*"
         Resource = "*"
-        Sid      = "Enable IAM User Permissions"
+      },
+      {
+        Sid    = "Allow ECR to use the key"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecr.amazonaws.com"
+        }
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ]
+        Resource = "*"
       },
     ]
     Version = "2012-10-17"
