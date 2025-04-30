@@ -8,6 +8,11 @@ variable "environment" {
   type        = string
 }
 
+variable "kk_account_id" {
+  description = "The account ID of kk"
+  type        = string
+}
+
 variable "kk_iam_user_arn" {
   description = "The ARN of kk"
   type        = string
