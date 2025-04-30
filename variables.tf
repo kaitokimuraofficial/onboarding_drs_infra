@@ -13,6 +13,11 @@ variable "kk_iam_user_arn" {
   type        = string
 }
 
+variable "project_name" {
+  description = "The name of project"
+  type        = string
+}
+
 variable "s3_backend_bucket_name" {
   description = "S3 backend bucket name"
   type        = string
