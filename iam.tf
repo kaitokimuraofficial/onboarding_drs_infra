@@ -21,7 +21,7 @@ data "aws_iam_policy_document" "drs_deploy_gha_assume_role_policy" {
       test     = "StringLike"
       variable = "token.actions.githubusercontent.com:sub"
       values = [
-        "repo:kaitokimuraofficial/daily_report_system:ref:refs/heads/main",
+        "repo:kaitokimuraofficial/daily_report_system:ref:refs/heads/deploy",
       ]
     }
   }
