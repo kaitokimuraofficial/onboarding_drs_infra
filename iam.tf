@@ -82,3 +82,46 @@ resource "aws_iam_role" "ecs_task_execution" {
   }
 }
 
+data "aws_iam_policy_document" "ecs_task_assume" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["ecs-tasks.amazonaws.com"]
+    }
+    condition {
+      test     = "ArnLike"
+      variable = "aws:SourceArn"
+      values   = ["arn:aws:ecs:${var.aws_region}:${var.kk_account_id}:*"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "aws:SourceAccount"
+      values   = ["${var.kk_account_id}"]
+    }
+  }
+}
+
+data "aws_iam_policy_document" "ecs_task" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "ecr:BatchGetImage",
+      "ecr:GetDownloadUrlForLayer",
+      "ecr:GetAuthorizationToken"
+    ]
+
+    resources = [
+      aws_ecr_repository.main.arn,
+    ]
+  }
+}
+
+resource "aws_iam_role" "ecs_task" {
+  assume_role_policy = data.aws_iam_policy_document.ecs_task_assume.json
+
+  tags = {
+    Name = "ecs-task-${local.name_suffix}"
+  }
+}
