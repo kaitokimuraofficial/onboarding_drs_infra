@@ -94,7 +94,7 @@ data "aws_iam_policy_document" "ecs_task_assume" {
     condition {
       test     = "StringEquals"
       variable = "aws:SourceAccount"
-      values   = ["${var.kk_account_id}"]
+      values   = [var.kk_account_id]
     }
   }
 }
