@@ -65,21 +65,17 @@ data "aws_iam_policy_document" "ecs_task_execution_assume" {
   }
 }
 
-data "aws_iam_policy" "ecs_task_execution_role_policy" {
-  arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
-
-resource "aws_iam_role_policy" "ecs_task_execution" {
-  role   = aws_iam_role.ecs_task_execution.id
-  policy = data.aws_iam_policy.ecs_task_execution_role_policy.json
-}
-
 resource "aws_iam_role" "ecs_task_execution" {
   assume_role_policy = data.aws_iam_policy_document.ecs_task_execution_assume.json
 
   tags = {
     Name = "ecs-task-execution-${local.name_suffix}"
   }
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
+  role       = aws_iam_role.ecs_task_execution.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
 
 data "aws_iam_policy_document" "ecs_task_assume" {
@@ -109,12 +105,13 @@ data "aws_iam_policy_document" "ecs_task" {
     actions = [
       "ecr:BatchGetImage",
       "ecr:GetDownloadUrlForLayer",
-      "ecr:GetAuthorizationToken"
+      "ecr:GetAuthorizationToken",
+      "logs:CreateLogStream",
+      "logs:PutLogEvents",
+      "logs:CreateLogGroup"
     ]
 
-    resources = [
-      aws_ecr_repository.main.arn,
-    ]
+    resources = ["*"]
   }
 }
 
@@ -124,4 +121,9 @@ resource "aws_iam_role" "ecs_task" {
   tags = {
     Name = "ecs-task-${local.name_suffix}"
   }
+}
+
+resource "aws_iam_role_policy" "ecs_task_execution" {
+  role   = aws_iam_role.ecs_task.id
+  policy = data.aws_iam_policy_document.ecs_task.json
 }
