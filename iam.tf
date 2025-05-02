@@ -113,6 +113,18 @@ data "aws_iam_policy_document" "ecs_task" {
 
     resources = ["*"]
   }
+
+  statement {
+    effect = "Allow"
+    actions = [
+      "kms:Decrypt",
+      "secretsmanager:GetSecretValue"
+    ]
+    resources = [
+      "arn:aws:secretsmanager:${var.aws_region}:${var.kk_account_id}:secret:**",
+      aws_kms_key.symmetric.arn
+    ]
+  }
 }
 
 resource "aws_iam_role" "ecs_task" {
