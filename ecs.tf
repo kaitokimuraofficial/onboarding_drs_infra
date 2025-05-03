@@ -35,19 +35,27 @@ resource "aws_ecs_task_definition" "daily_report_system" {
   container_definitions = jsonencode([
     {
       name      = "backend"
-      image     = "${aws_ecr_repository.main.arn}:backend-latest"
+      image     = "${aws_ecr_repository.main.repository_url}:backend-latest"
       cpu       = 0
       essential = true
       portMappings = [
         {
-          containerPort = 5173
-          hostPort      = 5173
+          containerPort = 3000
+          hostPort      = 3000
         }
       ]
-
+      secrets = [
+        {
+          name      = "SECRET_KEY_BASE",
+          valueFrom = "${aws_secretsmanager_secret.secret_key_base.arn}:SECRET_KEY_BASE::"
+        }
+      ]
+      command = ["sh", "-c", "echo hello world && sleep 3600"]
+      # command = ["bundle", "exec", "rails", "-v"]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
+          awslogs-create-group  = "true"
           awslogs-group         = aws_cloudwatch_log_group.daily_report_system.name
           awslogs-region        = var.aws_region
           awslogs-stream-prefix = "prod"
@@ -63,9 +71,10 @@ resource "aws_ecs_task_definition" "daily_report_system" {
 }
 
 resource "aws_ecs_service" "daily_report_system" {
-  name        = "daily-report-system-${local.name_suffix}"
-  cluster     = aws_ecs_cluster.main.arn
-  launch_type = "FARGATE"
+  name          = "daily-report-system-${local.name_suffix}"
+  cluster       = aws_ecs_cluster.main.arn
+  launch_type   = "FARGATE"
+  desired_count = 1
 
   task_definition = aws_ecs_task_definition.daily_report_system.arn
 
