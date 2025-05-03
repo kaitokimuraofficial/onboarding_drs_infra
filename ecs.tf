@@ -44,6 +44,15 @@ resource "aws_ecs_task_definition" "daily_report_system" {
           hostPort      = 5173
         }
       ]
+
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-group         = aws_cloudwatch_log_group.daily_report_system.name
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "prod"
+        }
+      }
     },
   ])
 
