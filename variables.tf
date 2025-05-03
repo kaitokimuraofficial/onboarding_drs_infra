@@ -27,3 +27,8 @@ variable "s3_backend_bucket_name" {
   description = "S3 backend bucket name"
   type        = string
 }
+
+variable "secret_key_base" {
+  description = "Secret Key Base"
+  type        = string
+}

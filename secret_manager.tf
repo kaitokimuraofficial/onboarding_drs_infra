@@ -11,4 +11,3 @@ resource "aws_secretsmanager_secret_version" "secret_key_base" {
   })
 }
 
-
