@@ -11,3 +11,22 @@ resource "aws_ecr_repository" "main" {
     kms_key         = aws_kms_key.symmetric.arn
   }
 }
+
+data "aws_ecr_lifecycle_policy_document" "main" {
+  rule {
+    priority    = 1
+    description = "for prefix BACKEND"
+
+    selection {
+      tag_status      = "tagged"
+      tag_prefix_list = ["frontend-latest", "backend-latest", "db-latest"]
+      count_type      = "imageCountMoreThan"
+      count_number    = 3
+    }
+  }
+}
+
+resource "aws_ecr_lifecycle_policy" "main" {
+  repository = aws_ecr_repository.main.name
+  policy     = data.aws_ecr_lifecycle_policy_document.main.json
+}

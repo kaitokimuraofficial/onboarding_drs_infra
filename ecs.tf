@@ -34,8 +34,8 @@ resource "aws_ecs_task_definition" "daily_report_system" {
 
   container_definitions = jsonencode([
     {
-      name      = "frontend"
-      image     = "${var.kk_account_id}.dkr.ecr.ap-northeast-1.amazonaws.com/main-drs-ap-northeast-1-dev:frontend-432941e6af5637f01aa513b9f8cad908b9d0326c"
+      name      = "backend"
+      image     = "${aws_ecr_repository.main.arn}:backend-latest"
       cpu       = 0
       essential = true
       portMappings = [
