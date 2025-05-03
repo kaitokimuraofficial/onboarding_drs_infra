@@ -53,3 +53,17 @@ resource "aws_ecs_task_definition" "daily_report_system" {
   }
 }
 
+resource "aws_ecs_service" "daily_report_system" {
+  name        = "daily-report-system-${local.name_suffix}"
+  cluster     = aws_ecs_cluster.main.arn
+  launch_type = "FARGATE"
+
+  task_definition = aws_ecs_task_definition.daily_report_system.arn
+
+  network_configuration {
+    subnets = [
+      aws_subnet.private["private-ne-1a"].id,
+      aws_subnet.private["private-ne-1c"].id
+    ]
+  }
+}
