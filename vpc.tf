@@ -28,6 +28,16 @@ resource "aws_route_table" "main" {
   }
 }
 
+resource "aws_route_table_association" "private_1a" {
+  subnet_id      = aws_subnet.private["private-ne-1a"].id
+  route_table_id = aws_route_table.main.id
+}
+
+resource "aws_route_table_association" "private_1c" {
+  subnet_id      = aws_subnet.private["private-ne-1c"].id
+  route_table_id = aws_route_table.main.id
+}
+
 resource "aws_security_group" "ecr_dkr" {
   description = "For VPC Endpoint of ecr.dkr"
   vpc_id      = aws_vpc.main.id
@@ -177,3 +187,36 @@ resource "aws_vpc_endpoint" "s3" {
   }
 }
 
+resource "aws_vpc_endpoint" "logs" {
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.ap-northeast-1.logs"
+  vpc_endpoint_type = "Interface"
+
+  subnet_ids = [
+    aws_subnet.private["private-ne-1a"].id,
+    aws_subnet.private["private-ne-1c"].id
+  ]
+
+  private_dns_enabled = true
+
+  tags = {
+    Name = "logs-${local.name_suffix}"
+  }
+}
+
+resource "aws_vpc_endpoint" "secret_manager" {
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.ap-northeast-1.secretsmanager"
+  vpc_endpoint_type = "Interface"
+
+  subnet_ids = [
+    aws_subnet.private["private-ne-1a"].id,
+    aws_subnet.private["private-ne-1c"].id
+  ]
+
+  private_dns_enabled = true
+
+  tags = {
+    Name = "secret-manager-${local.name_suffix}"
+  }
+}
