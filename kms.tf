@@ -34,6 +34,19 @@ resource "aws_kms_key_policy" "symmetric" {
         ]
         Resource = "*"
       },
+      {
+        Sid    = "Allow ECS to use this key"
+        Effect = "Allow"
+        Principal = {
+          AWS = aws_iam_role.ecs_task_execution.arn
+        }
+        Action = [
+          "kms:Decrypt",
+          "kms:Encrypt",
+          "kms:GenerateDataKey"
+        ]
+        Resource = "*"
+      }
     ]
     Version = "2012-10-17"
   })

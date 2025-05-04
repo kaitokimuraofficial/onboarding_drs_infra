@@ -88,11 +88,17 @@ resource "aws_iam_role_policy" "ecs_task_exec_secret" {
       {
         Effect = "Allow",
         Action = [
-          "secretsmanager:GetSecretValue"
+          "secretsmanager:GetSecretValue",
+          "ssm:GetParameters"
         ],
         Resource = [
-          "arn:aws:secretsmanager:${var.aws_region}:${var.kk_account_id}:secret:prod/drs/*"
+          "arn:aws:secretsmanager:${var.aws_region}:${var.kk_account_id}:secret:prod/drs/*",
         ]
+      },
+      {
+        Effect   = "Allow",
+        Action   = "kms:Decrypt",
+        Resource = "*"
       }
     ]
   })
