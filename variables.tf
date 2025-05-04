@@ -18,6 +18,10 @@ variable "kk_iam_user_arn" {
   type        = string
 }
 
+variable "mysql_db_name" {
+  description = "The name of initial database in MySQL instance"
+}
+
 variable "project_name" {
   description = "The name of project"
   type        = string
