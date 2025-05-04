@@ -47,11 +47,10 @@ resource "aws_ecs_task_definition" "daily_report_system" {
       secrets = [
         {
           name      = "SECRET_KEY_BASE",
-          valueFrom = "${aws_secretsmanager_secret.secret_key_base.arn}:SECRET_KEY_BASE::"
+          valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.kk_account_id}:secret:${aws_secretsmanager_secret.secret_key_base.name}:SECRET_KEY_BASE::"
         }
       ]
-      command = ["sh", "-c", "echo hello world && sleep 3600"]
-      # command = ["bundle", "exec", "rails", "-v"]
+      command = ["bundle", "exec", "rails", "-v"]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -66,7 +65,7 @@ resource "aws_ecs_task_definition" "daily_report_system" {
 
   runtime_platform {
     operating_system_family = "LINUX"
-    cpu_architecture        = "ARM64"
+    cpu_architecture        = "X86_64"
   }
 }
 
