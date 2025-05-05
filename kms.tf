@@ -1,5 +1,8 @@
 resource "aws_kms_key" "symmetric" {
   description = "Symmetric encryption KMS key"
+
+  enable_key_rotation     = true
+  rotation_period_in_days = 90
 }
 
 resource "aws_kms_alias" "symmetric_alias" {
@@ -12,7 +15,6 @@ resource "aws_kms_key_policy" "symmetric" {
   policy = jsonencode({
     Statement = [
       {
-        Sid    = "Enable only myself to do everything"
         Effect = "Allow"
         Principal = {
           AWS = "arn:aws:iam::${var.kk_iam_user_arn}"
@@ -21,7 +23,6 @@ resource "aws_kms_key_policy" "symmetric" {
         Resource = "*"
       },
       {
-        Sid    = "Allow ECR to use the key"
         Effect = "Allow"
         Principal = {
           Service = "ecr.amazonaws.com"
@@ -35,7 +36,6 @@ resource "aws_kms_key_policy" "symmetric" {
         Resource = "*"
       },
       {
-        Sid    = "Allow ECS to use this key"
         Effect = "Allow"
         Principal = {
           AWS = aws_iam_role.ecs_task_exec.arn
