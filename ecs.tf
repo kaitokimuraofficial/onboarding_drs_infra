@@ -70,10 +70,11 @@ resource "aws_ecs_task_definition" "daily_report_system" {
 }
 
 resource "aws_ecs_service" "daily_report_system" {
-  name          = "daily-report-system-${local.name_suffix}"
-  cluster       = aws_ecs_cluster.main.arn
-  launch_type   = "FARGATE"
-  desired_count = 1
+  name                   = "daily-report-system-${local.name_suffix}"
+  cluster                = aws_ecs_cluster.main.arn
+  launch_type            = "FARGATE"
+  desired_count          = 1
+  enable_execute_command = true
 
   task_definition = aws_ecs_task_definition.daily_report_system.arn
 

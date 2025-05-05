@@ -220,3 +220,21 @@ resource "aws_vpc_endpoint" "secret_manager" {
     Name = "secret-manager-${local.name_suffix}"
   }
 }
+
+resource "aws_vpc_endpoint" "ssm_messages" {
+  vpc_id            = aws_vpc.main.id
+  service_name      = "com.amazonaws.ap-northeast-1.ssmmessages"
+  vpc_endpoint_type = "Interface"
+
+  subnet_ids = [
+    aws_subnet.private["private-ne-1a"].id,
+    aws_subnet.private["private-ne-1c"].id
+  ]
+
+  private_dns_enabled = true
+
+  tags = {
+    Name = "ssm-messages-${local.name_suffix}"
+  }
+}
+
