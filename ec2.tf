@@ -6,6 +6,8 @@ resource "aws_instance" "bastion" {
   tenancy                     = "default"
   iam_instance_profile        = aws_iam_instance_profile.ssm_bastion.name
 
+  user_data = file("${path.module}/scripts/user_data.sh")
+
   vpc_security_group_ids = [
     aws_security_group.bastion.id
   ]
