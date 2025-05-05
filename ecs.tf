@@ -28,7 +28,7 @@ resource "aws_ecs_task_definition" "daily_report_system" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = 512
   memory                   = 1024
-  execution_role_arn       = aws_iam_role.ecs_task_execution.arn
+  execution_role_arn       = aws_iam_role.ecs_task_exec.arn
   task_role_arn            = aws_iam_role.ecs_task.arn
   network_mode             = "awsvpc"
 
@@ -73,7 +73,7 @@ resource "aws_ecs_service" "daily_report_system" {
   name                   = "daily-report-system-${local.name_suffix}"
   cluster                = aws_ecs_cluster.main.arn
   launch_type            = "FARGATE"
-  desired_count          = 1
+  desired_count          = 0
   enable_execute_command = true
 
   task_definition = aws_ecs_task_definition.daily_report_system.arn
