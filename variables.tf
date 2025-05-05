@@ -23,6 +23,16 @@ variable "mysql_db_name" {
   type        = string
 }
 
+variable "mysql_username" {
+  description = "The name of mysql user"
+  type        = string
+}
+
+variable "mysql_password" {
+  description = "The password of mysql user"
+  type        = string
+}
+
 variable "project_name" {
   description = "The name of project"
   type        = string
