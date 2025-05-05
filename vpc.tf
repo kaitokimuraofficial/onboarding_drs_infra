@@ -54,24 +54,6 @@ resource "aws_security_group" "ecr_dkr" {
   }
 }
 
-data "aws_iam_policy_document" "ecr_dkr" {
-  statement {
-    principals {
-      identifiers = ["*"]
-      type        = "*"
-    }
-
-    actions = [
-      "*"
-    ]
-
-    resources = [
-      "*"
-    ]
-  }
-}
-
-
 resource "aws_security_group" "ecr_api" {
   description = "For VPC Endpoint of ecr.api"
   vpc_id      = aws_vpc.main.id
@@ -88,41 +70,6 @@ resource "aws_security_group" "ecr_api" {
 
   tags = {
     Name = "ecr-api-${local.name_suffix}"
-  }
-}
-
-data "aws_iam_policy_document" "ecr_api" {
-  statement {
-    principals {
-      identifiers = ["*"]
-      type        = "*"
-    }
-
-    actions = [
-      "*"
-    ]
-
-    resources = [
-      "*"
-    ]
-  }
-}
-
-
-data "aws_iam_policy_document" "s3" {
-  statement {
-    principals {
-      identifiers = ["*"]
-      type        = "*"
-    }
-
-    actions = [
-      "*"
-    ]
-
-    resources = [
-      "*"
-    ]
   }
 }
 
@@ -168,7 +115,6 @@ resource "aws_vpc_endpoint_policy" "ecr_dkr" {
   vpc_endpoint_id = aws_vpc_endpoint.private_subnets["ecr-dkr"].id
   policy          = data.aws_iam_policy_document.ecr_dkr.json
 }
-
 
 resource "aws_vpc_endpoint_policy" "s3" {
   vpc_endpoint_id = aws_vpc_endpoint.private_subnets["s3"].id

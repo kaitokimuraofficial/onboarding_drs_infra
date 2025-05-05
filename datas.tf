@@ -184,3 +184,54 @@ data "aws_iam_policy_document" "ecs_task" {
   }
 }
 
+data "aws_iam_policy_document" "ecr_dkr" {
+  statement {
+    principals {
+      identifiers = ["*"]
+      type        = "*"
+    }
+
+    actions = [
+      "*"
+    ]
+
+    resources = [
+      "*"
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "ecr_api" {
+  statement {
+    principals {
+      identifiers = ["*"]
+      type        = "*"
+    }
+
+    actions = [
+      "*"
+    ]
+
+    resources = [
+      "*"
+    ]
+  }
+}
+
+data "aws_iam_policy_document" "s3" {
+  statement {
+    principals {
+      identifiers = ["*"]
+      type        = "*"
+    }
+
+    actions = [
+      "*"
+    ]
+
+    resources = [
+      "*"
+    ]
+  }
+}
+
