@@ -35,20 +35,19 @@ resource "aws_iam_role_policy" "ecs_task" {
 }
 
 resource "aws_iam_role" "ssm_bastion" {
-  name = "ssm-bastion-${local.name_suffix}"
+  name               = "ssm-bastion-${local.name_suffix}"
+  assume_role_policy = data.aws_iam_policy_document.ec2_assume.json
+}
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      },
-    ]
-  })
+data "aws_iam_policy_document" "ec2_assume" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+  }
 }
 
 resource "aws_iam_instance_profile" "ssm_bastion" {
