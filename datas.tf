@@ -76,7 +76,7 @@ data "aws_iam_policy_document" "ecs_task_exec" {
       "ssm:GetParameters"
     ]
     resources = [
-      "arn:aws:secretsmanager:${var.aws_region}:${var.kk_account_id}:secret:prod/drs/*"
+      "arn:aws:secretsmanager:${var.aws_region}:${var.kk_account_id}:secret:drs/backend/*"
     ]
   }
 
