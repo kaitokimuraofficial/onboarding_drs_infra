@@ -37,6 +37,10 @@ locals {
       "type" = "Interface",
       "sn"   = "com.amazonaws.ap-northeast-1.secretsmanager"
     },
+    "ssm" = {
+      "type" = "Interface",
+      "sn"   = "com.amazonaws.ap-northeast-1.ssm"
+    },
     "ssm-messages" = {
       "type" = "Interface",
       "sn"   = "com.amazonaws.ap-northeast-1.ssmmessages"
