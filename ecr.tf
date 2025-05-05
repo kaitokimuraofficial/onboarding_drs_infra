@@ -15,13 +15,19 @@ resource "aws_ecr_repository" "main" {
 data "aws_ecr_lifecycle_policy_document" "main" {
   rule {
     priority    = 1
-    description = "for prefix BACKEND"
+    description = "Keep the last 3 images that contain the 'latest' tag"
 
     selection {
-      tag_status      = "tagged"
-      tag_prefix_list = ["frontend-latest", "backend-latest", "db-latest"]
-      count_type      = "imageCountMoreThan"
-      count_number    = 3
+      tag_status = "tagged"
+      tag_prefix_list = [
+        "frontend-latest",
+        "backend-latest"
+      ]
+      count_type   = "imageCountMoreThan"
+      count_number = 3
+    }
+    action {
+      type = "expire"
     }
   }
 }
