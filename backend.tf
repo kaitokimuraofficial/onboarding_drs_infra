@@ -18,3 +18,4 @@ resource "aws_s3_bucket" "backend" {
     Name = "${var.s3_backend_bucket_name}-${local.name_suffix}"
   }
 }
+

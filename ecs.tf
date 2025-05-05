@@ -85,3 +85,4 @@ resource "aws_ecs_service" "daily_report_system" {
     ]
   }
 }
+

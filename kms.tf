@@ -51,3 +51,4 @@ resource "aws_kms_key_policy" "symmetric" {
     Version = "2012-10-17"
   })
 }
+

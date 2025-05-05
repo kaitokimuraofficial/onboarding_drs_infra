@@ -36,3 +36,4 @@ resource "aws_db_instance" "mysql" {
   multi_az                      = false
   auto_minor_version_upgrade    = false
 }
+

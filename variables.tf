@@ -20,6 +20,7 @@ variable "kk_iam_user_arn" {
 
 variable "mysql_db_name" {
   description = "The name of initial database in MySQL instance"
+  type        = string
 }
 
 variable "project_name" {
@@ -36,3 +37,4 @@ variable "secret_key_base" {
   description = "Secret Key Base"
   type        = string
 }
+

@@ -8,3 +8,4 @@ locals {
     "private-ne-1c" = { "az" = "ap-northeast-1c", "cidr" = "10.0.192.0/20" },
   }
 }
+

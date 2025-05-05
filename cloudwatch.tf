@@ -6,3 +6,4 @@ resource "aws_cloudwatch_log_group" "daily_report_system" {
     Environment = "prod"
   }
 }
+
