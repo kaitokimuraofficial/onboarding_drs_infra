@@ -44,10 +44,23 @@ resource "aws_ecs_task_definition" "daily_report_system" {
           hostPort      = 3000
         }
       ]
+      environment = [
+        { name = "DB_NAME", value = var.mysql_db_name },
+        { name = "DB_HOST", value = aws_db_instance.mysql.endpoint },
+        { name = "DB_PORT", value = "3306" }
+      ]
       secrets = [
         {
           name      = "SECRET_KEY_BASE",
           valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.kk_account_id}:secret:${aws_secretsmanager_secret.backend_task.name}:SECRET_KEY_BASE::"
+        },
+        {
+          name      = "DB_USERNAME"
+          valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.kk_account_id}:secret:${aws_secretsmanager_secret.backend_task.name}:DB_USERNAME::"
+        },
+        {
+          name      = "DB_PASSWORD"
+          valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.kk_account_id}:secret:${aws_secretsmanager_secret.backend_task.name}:DB_PASSWORD::"
         }
       ]
       command = ["bundle", "exec", "rails", "-v"]
