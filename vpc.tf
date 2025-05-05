@@ -28,13 +28,10 @@ resource "aws_route_table" "main" {
   }
 }
 
-resource "aws_route_table_association" "private_1a" {
-  subnet_id      = aws_subnet.private["private-ne-1a"].id
-  route_table_id = aws_route_table.main.id
-}
+resource "aws_route_table_association" "private" {
+  for_each = aws_subnet.private
 
-resource "aws_route_table_association" "private_1c" {
-  subnet_id      = aws_subnet.private["private-ne-1c"].id
+  subnet_id      = each.value.id
   route_table_id = aws_route_table.main.id
 }
 
@@ -74,27 +71,6 @@ data "aws_iam_policy_document" "ecr_dkr" {
   }
 }
 
-resource "aws_vpc_endpoint" "ecr_dkr" {
-  vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.ap-northeast-1.ecr.dkr"
-  vpc_endpoint_type = "Interface"
-
-  policy = data.aws_iam_policy_document.ecr_dkr.json
-
-  subnet_ids = [
-    aws_subnet.private["private-ne-1a"].id,
-    aws_subnet.private["private-ne-1c"].id
-  ]
-  security_group_ids = [
-    aws_security_group.ecr_dkr.id
-  ]
-
-  private_dns_enabled = true
-
-  tags = {
-    Name = "ecr-dkr-${local.name_suffix}"
-  }
-}
 
 resource "aws_security_group" "ecr_api" {
   description = "For VPC Endpoint of ecr.api"
@@ -132,27 +108,6 @@ data "aws_iam_policy_document" "ecr_api" {
   }
 }
 
-resource "aws_vpc_endpoint" "ecr_api" {
-  vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.ap-northeast-1.ecr.api"
-  vpc_endpoint_type = "Interface"
-
-  policy = data.aws_iam_policy_document.ecr_api.json
-
-  subnet_ids = [
-    aws_subnet.private["private-ne-1a"].id,
-    aws_subnet.private["private-ne-1c"].id
-  ]
-  security_group_ids = [
-    aws_security_group.ecr_api.id
-  ]
-
-  private_dns_enabled = true
-
-  tags = {
-    Name = "ecr-api-${local.name_suffix}"
-  }
-}
 
 data "aws_iam_policy_document" "s3" {
   statement {
@@ -171,70 +126,52 @@ data "aws_iam_policy_document" "s3" {
   }
 }
 
-resource "aws_vpc_endpoint" "s3" {
+resource "aws_vpc_endpoint" "private_subnets" {
+  for_each = local.endpoints
+
   vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.ap-northeast-1.s3"
-  vpc_endpoint_type = "Gateway"
+  vpc_endpoint_type = each.value["type"]
+  service_name      = each.value["sn"]
 
-  policy = data.aws_iam_policy_document.s3.json
+  subnet_ids = each.value["type"] == "Interface" ? [
+    aws_subnet.private["private-ne-1a"].id,
+    aws_subnet.private["private-ne-1c"].id
+  ] : null
 
-  route_table_ids = [
+  route_table_ids = each.value["type"] == "Gateway" ? [
     aws_route_table.main.id
-  ]
+  ] : null
+
+  private_dns_enabled = each.value["type"] == "Interface"
 
   tags = {
-    Name = "s3-${local.name_suffix}"
+    Name = "${each.key}-${local.name_suffix}"
   }
 }
 
-resource "aws_vpc_endpoint" "logs" {
-  vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.ap-northeast-1.logs"
-  vpc_endpoint_type = "Interface"
-
-  subnet_ids = [
-    aws_subnet.private["private-ne-1a"].id,
-    aws_subnet.private["private-ne-1c"].id
-  ]
-
-  private_dns_enabled = true
-
-  tags = {
-    Name = "logs-${local.name_suffix}"
-  }
+resource "aws_vpc_endpoint_security_group_association" "ecr_api" {
+  vpc_endpoint_id   = aws_vpc_endpoint.private_subnets["ecr-api"].id
+  security_group_id = aws_security_group.ecr_api.id
 }
 
-resource "aws_vpc_endpoint" "secret_manager" {
-  vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.ap-northeast-1.secretsmanager"
-  vpc_endpoint_type = "Interface"
-
-  subnet_ids = [
-    aws_subnet.private["private-ne-1a"].id,
-    aws_subnet.private["private-ne-1c"].id
-  ]
-
-  private_dns_enabled = true
-
-  tags = {
-    Name = "secret-manager-${local.name_suffix}"
-  }
+resource "aws_vpc_endpoint_policy" "ecr_api" {
+  vpc_endpoint_id = aws_vpc_endpoint.private_subnets["ecr-api"].id
+  policy          = data.aws_iam_policy_document.ecr_api.json
 }
 
-resource "aws_vpc_endpoint" "ssm_messages" {
-  vpc_id            = aws_vpc.main.id
-  service_name      = "com.amazonaws.ap-northeast-1.ssmmessages"
-  vpc_endpoint_type = "Interface"
+resource "aws_vpc_endpoint_security_group_association" "ecr_dkr" {
+  vpc_endpoint_id   = aws_vpc_endpoint.private_subnets["ecr-dkr"].id
+  security_group_id = aws_security_group.ecr_dkr.id
+}
 
-  subnet_ids = [
-    aws_subnet.private["private-ne-1a"].id,
-    aws_subnet.private["private-ne-1c"].id
-  ]
+resource "aws_vpc_endpoint_policy" "ecr_dkr" {
+  vpc_endpoint_id = aws_vpc_endpoint.private_subnets["ecr-dkr"].id
+  policy          = data.aws_iam_policy_document.ecr_dkr.json
+}
 
-  private_dns_enabled = true
 
-  tags = {
-    Name = "ssm-messages-${local.name_suffix}"
-  }
+resource "aws_vpc_endpoint_policy" "s3" {
+  vpc_endpoint_id = aws_vpc_endpoint.private_subnets["s3"].id
+  policy          = data.aws_iam_policy_document.s3.json
 }
 
