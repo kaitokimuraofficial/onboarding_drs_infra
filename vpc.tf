@@ -8,6 +8,27 @@ resource "aws_vpc" "main" {
   }
 }
 
+resource "aws_internet_gateway" "main" {
+  vpc_id = aws_vpc.main.id
+
+  tags = {
+    Name = "main-${local.name_suffix}"
+  }
+}
+
+resource "aws_subnet" "public" {
+  for_each = local.public_subnets
+
+  vpc_id                  = aws_vpc.main.id
+  cidr_block              = each.value["cidr"]
+  availability_zone       = each.value["az"]
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "public-${each.key}-${local.name_suffix}"
+  }
+}
+
 resource "aws_subnet" "private" {
   for_each = local.private_subnets
 
@@ -21,18 +42,38 @@ resource "aws_subnet" "private" {
   }
 }
 
-resource "aws_route_table" "main" {
+resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
   tags = {
-    Name = "main-${local.name_suffix}"
+    Name = "public-${local.name_suffix}"
   }
+}
+
+resource "aws_route_table" "private" {
+  vpc_id = aws_vpc.main.id
+  tags = {
+    Name = "private-${local.name_suffix}"
+  }
+}
+
+resource "aws_route_table_association" "public" {
+  for_each = aws_subnet.public
+
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route" "igw" {
+  route_table_id         = aws_route_table.public.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.main.id
 }
 
 resource "aws_route_table_association" "private" {
   for_each = aws_subnet.private
 
   subnet_id      = each.value.id
-  route_table_id = aws_route_table.main.id
+  route_table_id = aws_route_table.private.id
 }
 
 resource "aws_security_group" "ecr_dkr" {
@@ -86,7 +127,8 @@ resource "aws_vpc_endpoint" "private_subnets" {
   ] : null
 
   route_table_ids = each.value["type"] == "Gateway" ? [
-    aws_route_table.main.id
+    aws_route_table.public.id,
+    aws_route_table.private.id
   ] : null
 
   private_dns_enabled = each.value["type"] == "Interface"
@@ -119,5 +161,37 @@ resource "aws_vpc_endpoint_policy" "ecr_dkr" {
 resource "aws_vpc_endpoint_policy" "s3" {
   vpc_endpoint_id = aws_vpc_endpoint.private_subnets["s3"].id
   policy          = data.aws_iam_policy_document.s3.json
+}
+
+resource "aws_security_group" "ssh" {
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  tags = {
+    Name = "ssh-${local.name_suffix}"
+  }
+}
+
+resource "aws_vpc_endpoint_security_group_association" "ssm" {
+  vpc_endpoint_id   = aws_vpc_endpoint.private_subnets["ssm"].id
+  security_group_id = aws_security_group.ssh.id
+}
+
+resource "aws_vpc_endpoint_security_group_association" "ssm_messages" {
+  vpc_endpoint_id   = aws_vpc_endpoint.private_subnets["ssm-messages"].id
+  security_group_id = aws_security_group.ssh.id
 }
 

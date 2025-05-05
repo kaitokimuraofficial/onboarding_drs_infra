@@ -3,6 +3,17 @@ locals {
 }
 
 locals {
+  public_subnets = {
+    "public-ne-1a" = {
+      "az"   = "ap-northeast-1a",
+      "cidr" = "10.0.0.0/20"
+    },
+    "public-ne-1c" = {
+      "az"   = "ap-northeast-1c",
+      "cidr" = "10.0.16.0/20"
+    }
+  }
+
   private_subnets = {
     "private-ne-1a" = {
       "az"   = "ap-northeast-1a",
@@ -36,6 +47,10 @@ locals {
     "secrets-manager" = {
       "type" = "Interface",
       "sn"   = "com.amazonaws.ap-northeast-1.secretsmanager"
+    },
+    "ssm" = {
+      "type" = "Interface",
+      "sn"   = "com.amazonaws.ap-northeast-1.ssm"
     },
     "ssm-messages" = {
       "type" = "Interface",
