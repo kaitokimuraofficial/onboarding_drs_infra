@@ -38,7 +38,7 @@ resource "aws_kms_key_policy" "symmetric" {
         Sid    = "Allow ECS to use this key"
         Effect = "Allow"
         Principal = {
-          AWS = aws_iam_role.ecs_task_execution.arn
+          AWS = aws_iam_role.ecs_task_exec.arn
         }
         Action = [
           "kms:Decrypt",
