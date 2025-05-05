@@ -63,7 +63,7 @@ resource "aws_ecs_task_definition" "daily_report_system" {
           valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.kk_account_id}:secret:${aws_secretsmanager_secret.backend_task.name}:DB_PASSWORD::"
         }
       ]
-      command = ["bundle", "exec", "rails", "-v"]
+      command = ["bundle", "exec", "rake", "db:setup_seeds"]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -86,7 +86,7 @@ resource "aws_ecs_service" "daily_report_system" {
   name                   = "daily-report-system-${local.name_suffix}"
   cluster                = aws_ecs_cluster.main.arn
   launch_type            = "FARGATE"
-  desired_count          = 0
+  desired_count          = 1
   enable_execute_command = true
 
   task_definition = aws_ecs_task_definition.daily_report_system.arn
