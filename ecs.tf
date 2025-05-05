@@ -47,7 +47,7 @@ resource "aws_ecs_task_definition" "daily_report_system" {
       secrets = [
         {
           name      = "SECRET_KEY_BASE",
-          valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.kk_account_id}:secret:${aws_secretsmanager_secret.secret_key_base.name}:SECRET_KEY_BASE::"
+          valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.kk_account_id}:secret:${aws_secretsmanager_secret.backend_task.name}:SECRET_KEY_BASE::"
         }
       ]
       command = ["bundle", "exec", "rails", "-v"]
