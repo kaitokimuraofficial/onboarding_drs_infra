@@ -127,7 +127,6 @@ resource "aws_vpc_endpoint" "private_subnets" {
   ] : null
 
   route_table_ids = each.value["type"] == "Gateway" ? [
-    aws_route_table.public.id,
     aws_route_table.private.id
   ] : null
 

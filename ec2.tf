@@ -1,10 +1,9 @@
 resource "aws_instance" "bastion" {
   ami                         = "ami-0c2da9ee6644f16e5"
   instance_type               = "t2.nano"
-  associate_public_ip_address = false
+  associate_public_ip_address = true
   subnet_id                   = aws_subnet.public["public-ne-1a"].id
   tenancy                     = "default"
-  iam_instance_profile        = aws_iam_instance_profile.ssm_bastion.name
 
   user_data = file("${path.module}/scripts/user_data.sh")
 
@@ -22,13 +21,10 @@ resource "aws_security_group" "bastion" {
   vpc_id = aws_vpc.main.id
 
   ingress {
-    from_port = 443
-    to_port   = 443
-    protocol  = "tcp"
-    cidr_blocks = [
-      aws_subnet.public["public-ne-1a"].cidr_block,
-      aws_subnet.public["public-ne-1c"].cidr_block
-    ]
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
@@ -37,5 +33,11 @@ resource "aws_security_group" "bastion" {
     protocol    = -1
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+resource "aws_ec2_instance_connect_endpoint" "for_bastion_eic" {
+  subnet_id          = aws_subnet.public["public-ne-1a"].id
+  security_group_ids = [aws_security_group.bastion.id]
+  preserve_client_ip = true
 }
 
