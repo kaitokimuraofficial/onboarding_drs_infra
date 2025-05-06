@@ -34,6 +34,28 @@ resource "aws_ecs_task_definition" "daily_report_system" {
 
   container_definitions = jsonencode([
     {
+      name      = "frontend"
+      image     = "${aws_ecr_repository.main.repository_url}:frontend-latest"
+      cpu       = 0
+      essential = true
+      portMappings = [
+        {
+          containerPort = 80
+          hostPort      = 80
+        }
+      ]
+      command = ["nginx", "-g", "daemon off"]
+      logConfiguration = {
+        logDriver = "awslogs"
+        options = {
+          awslogs-create-group  = "true"
+          awslogs-group         = aws_cloudwatch_log_group.daily_report_system.name
+          awslogs-region        = var.aws_region
+          awslogs-stream-prefix = "prod"
+        }
+      }
+    },
+    {
       name      = "backend"
       image     = "${aws_ecr_repository.main.repository_url}:backend-latest"
       cpu       = 0
@@ -63,7 +85,7 @@ resource "aws_ecs_task_definition" "daily_report_system" {
           valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.kk_account_id}:secret:${aws_secretsmanager_secret.backend_task.name}:DB_PASSWORD::"
         }
       ]
-      command = ["bundle", "exec", "rake", "db:setup_seeds"]
+      command = ["/bin/sh", "-c", "bundle exec rake db:setup_seeds && bundle exec rails s -b 0.0.0.0"]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -86,7 +108,7 @@ resource "aws_ecs_service" "daily_report_system" {
   name                   = "daily-report-system-${local.name_suffix}"
   cluster                = aws_ecs_cluster.main.arn
   launch_type            = "FARGATE"
-  desired_count          = 1
+  desired_count          = 0
   enable_execute_command = true
 
   task_definition = aws_ecs_task_definition.daily_report_system.arn
