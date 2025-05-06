@@ -119,5 +119,11 @@ resource "aws_ecs_service" "daily_report_system" {
       aws_subnet.private["private-ne-1c"].id
     ]
   }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.frontend.arn
+    container_name   = "frontend"
+    container_port   = 80
+  }
 }
 

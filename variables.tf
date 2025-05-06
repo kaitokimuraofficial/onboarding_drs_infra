@@ -43,6 +43,11 @@ variable "s3_backend_bucket_name" {
   type        = string
 }
 
+variable "s3_drs_bucket_name" {
+  description = "S3 DRS bucket name"
+  type        = string
+}
+
 variable "secret_key_base" {
   description = "Secret Key Base"
   type        = string
