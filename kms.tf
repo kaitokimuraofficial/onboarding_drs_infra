@@ -5,7 +5,6 @@ resource "aws_kms_key" "symmetric" {
   rotation_period_in_days = 90
 }
 
-/*
 resource "aws_kms_key_policy" "symmetric" {
   key_id = aws_kms_key.symmetric.id
   policy = jsonencode({
@@ -31,6 +30,7 @@ resource "aws_kms_key_policy" "symmetric" {
         ]
         Resource = "*"
       },
+      /*
       {
         Effect = "Allow"
         Principal = {
@@ -43,8 +43,9 @@ resource "aws_kms_key_policy" "symmetric" {
         ]
         Resource = "*"
       }
+      */
     ]
     Version = "2012-10-17"
   })
 }
-*/
+
