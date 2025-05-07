@@ -1,4 +1,3 @@
-/*
 data "aws_iam_policy_document" "drs_deploy_gha_assume" {
   statement {
     effect = "Allow"
@@ -53,7 +52,7 @@ data "aws_iam_policy_document" "drs_deploy_gha" {
     ]
   }
 }
-
+/*
 data "aws_iam_policy_document" "ecs_task_exec_assume" {
   statement {
     effect = "Allow"
