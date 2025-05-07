@@ -61,8 +61,9 @@ resource "aws_security_group" "alb" {
 }
 
 resource "aws_lb_target_group" "frontend" {
-  name   = "frontend-${local.name_suffix}"
-  vpc_id = aws_vpc.main.id
+  name        = "frontend-${local.name_suffix}"
+  vpc_id      = aws_vpc.main.id
+  target_type = "ip"
 
   port     = 80
   protocol = "HTTP"
@@ -83,18 +84,20 @@ resource "aws_lb" "alb" {
   access_logs {
     enabled = true
     bucket  = aws_s3_bucket.drs.id
-    prefix  = "/logs/drs/access"
+    prefix  = "logs/drs/access"
   }
 
   connection_logs {
     enabled = true
     bucket  = aws_s3_bucket.drs.id
-    prefix  = "/logs/drs/connection"
+    prefix  = "logs/drs/connection"
   }
 }
 
 resource "aws_lb_listener" "alb_default" {
   load_balancer_arn = aws_lb.alb.id
+  port              = "80"
+  protocol          = "HTTP"
 
   default_action {
     target_group_arn = aws_lb_target_group.frontend.id
