@@ -15,13 +15,13 @@ resource "aws_internet_gateway" "main" {
     Name = "main-${local.name_suffix}"
   }
 }
-/*
-resource "aws_subnet" "public" {
-  for_each = local.public_subnets
+
+resource "aws_subnet" "public_1a" {
+  for_each = local.public_subnets_1a
 
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = each.value["cidr"]
   availability_zone       = each.value["az"]
+  cidr_block              = each.value["cidr"]
   map_public_ip_on_launch = true
 
   tags = {
@@ -29,12 +29,12 @@ resource "aws_subnet" "public" {
   }
 }
 
-resource "aws_subnet" "private" {
-  for_each = local.private_subnets
+resource "aws_subnet" "private_1a" {
+  for_each = local.private_subnets_1a
 
   vpc_id                  = aws_vpc.main.id
-  cidr_block              = each.value["cidr"]
   availability_zone       = each.value["az"]
+  cidr_block              = each.value["cidr"]
   map_public_ip_on_launch = false
 
   tags = {
@@ -42,6 +42,7 @@ resource "aws_subnet" "private" {
   }
 }
 
+/*
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.main.id
   tags = {
