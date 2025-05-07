@@ -151,36 +151,3 @@ resource "aws_vpc_endpoint_policy" "s3" {
   })
 }
 
-/*
-resource "aws_security_group" "ssh" {
-  vpc_id = aws_vpc.main.id
-
-  ingress {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  tags = {
-    Name = "ssh-${local.name_suffix}"
-  }
-}
-
-resource "aws_vpc_endpoint_security_group_association" "ssm" {
-  vpc_endpoint_id   = aws_vpc_endpoint.private_subnets["ssm"].id
-  security_group_id = aws_security_group.ssh.id
-}
-
-resource "aws_vpc_endpoint_security_group_association" "ssm_messages" {
-  vpc_endpoint_id   = aws_vpc_endpoint.private_subnets["ssm-messages"].id
-  security_group_id = aws_security_group.ssh.id
-}
-*/

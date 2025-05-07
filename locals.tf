@@ -50,7 +50,6 @@ locals {
       "type" = "Interface",
       "sn"   = "com.amazonaws.ap-northeast-1.logs"
     },
-    /*
     "secrets-manager" = {
       "type" = "Interface",
       "sn"   = "com.amazonaws.ap-northeast-1.secretsmanager"
@@ -63,7 +62,6 @@ locals {
       "type" = "Interface",
       "sn"   = "com.amazonaws.ap-northeast-1.ssmmessages"
     }
-    */
   }
 }
 
