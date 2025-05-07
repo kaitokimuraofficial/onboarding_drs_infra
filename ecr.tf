@@ -1,6 +1,6 @@
 resource "aws_ecr_repository" "main" {
   name                 = "main-${local.name_suffix}"
-  image_tag_mutability = "IMMUTABLE"
+  image_tag_mutability = "MUTABLE"
 
   image_scanning_configuration {
     scan_on_push = true
@@ -15,16 +15,26 @@ resource "aws_ecr_repository" "main" {
 data "aws_ecr_lifecycle_policy_document" "main" {
   rule {
     priority    = 1
-    description = "Keep the last 3 images that contain the 'latest' tag"
-
+    description = "Keep the last 3 frontend-latest images"
     selection {
-      tag_status = "tagged"
-      tag_prefix_list = [
-        "frontend-latest",
-        "backend-latest"
-      ]
-      count_type   = "imageCountMoreThan"
-      count_number = 3
+      tag_status      = "tagged"
+      tag_prefix_list = ["frontend-latest"]
+      count_type      = "imageCountMoreThan"
+      count_number    = 3
+    }
+    action {
+      type = "expire"
+    }
+  }
+
+  rule {
+    priority    = 2
+    description = "Keep the last 3 backend-latest images"
+    selection {
+      tag_status      = "tagged"
+      tag_prefix_list = ["backend-latest"]
+      count_type      = "imageCountMoreThan"
+      count_number    = 3
     }
     action {
       type = "expire"
