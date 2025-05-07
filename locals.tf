@@ -46,11 +46,11 @@ locals {
       "type" = "Interface",
       "sn"   = "com.amazonaws.ap-northeast-1.ecr.dkr"
     },
-    /*
     "logs" = {
       "type" = "Interface",
       "sn"   = "com.amazonaws.ap-northeast-1.logs"
     },
+    /*
     "secrets-manager" = {
       "type" = "Interface",
       "sn"   = "com.amazonaws.ap-northeast-1.secretsmanager"
