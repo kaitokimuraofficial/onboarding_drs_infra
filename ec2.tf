@@ -54,7 +54,7 @@ resource "aws_ec2_instance_connect_endpoint" "for_bastion_eic" {
   security_group_ids = [aws_security_group.bastion_eic_endpoint.id]
   preserve_client_ip = true
 }
-/*
+
 resource "aws_security_group" "alb" {
   name   = "alb-${local.name_suffix}"
   vpc_id = aws_vpc.main.id
@@ -67,15 +67,15 @@ resource "aws_security_group" "alb" {
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    from_port       = 80
+    to_port         = 80
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ecs_service.id]
   }
 }
 
 resource "aws_lb_target_group" "frontend" {
-  name        = "frontend-${local.name_suffix}"
+  name        = "drs-1a-prod"
   vpc_id      = aws_vpc.main.id
   target_type = "ip"
   port        = 80
@@ -100,21 +100,9 @@ resource "aws_lb" "alb" {
   security_groups = [aws_security_group.alb.id]
 
   subnets = [
-    aws_subnet.public["public-ne-1a"].id,
-    aws_subnet.public["public-ne-1c"].id
+    aws_subnet.public_1a["ingress"].id,
+    aws_subnet.public_1c["ingress"].id
   ]
-
-  access_logs {
-    enabled = true
-    bucket  = aws_s3_bucket.drs.id
-    prefix  = "logs/drs/access"
-  }
-
-  connection_logs {
-    enabled = true
-    bucket  = aws_s3_bucket.drs.id
-    prefix  = "logs/drs/connection"
-  }
 }
 
 resource "aws_lb_listener" "alb_default" {
@@ -127,4 +115,4 @@ resource "aws_lb_listener" "alb_default" {
     type             = "forward"
   }
 }
-*/
+

@@ -29,6 +29,19 @@ resource "aws_subnet" "public_1a" {
   }
 }
 
+resource "aws_subnet" "public_1c" {
+  for_each = local.public_subnets_1c
+
+  vpc_id                  = aws_vpc.main.id
+  availability_zone       = each.value["az"]
+  cidr_block              = each.value["cidr"]
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "public-${each.key}-drs-ap-northeast-1c-prod"
+  }
+}
+
 resource "aws_subnet" "private_1a" {
   for_each = local.private_subnets_1a
 
@@ -69,8 +82,15 @@ resource "aws_route_table" "private" {
   }
 }
 
-resource "aws_route_table_association" "public" {
+resource "aws_route_table_association" "public_1a" {
   for_each = aws_subnet.public_1a
+
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.public.id
+}
+
+resource "aws_route_table_association" "public_1c" {
+  for_each = aws_subnet.public_1c
 
   subnet_id      = each.value.id
   route_table_id = aws_route_table.public.id

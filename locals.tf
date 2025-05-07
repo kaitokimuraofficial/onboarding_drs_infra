@@ -13,6 +13,12 @@ locals {
       "cidr" = "10.0.240.0/24"
     }
   }
+  public_subnets_1c = {
+    "ingress" = {
+      "az"   = "ap-northeast-1c",
+      "cidr" = "10.0.1.0/24"
+    }
+  }
 
   private_subnets_1a = {
     "ecs" = {
