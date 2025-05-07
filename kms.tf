@@ -47,7 +47,6 @@ resource "aws_kms_key_policy" "symmetric" {
         ]
         Resource = "*"
       },
-      /*
       {
         Effect = "Allow"
         Principal = {
@@ -60,7 +59,6 @@ resource "aws_kms_key_policy" "symmetric" {
         ]
         Resource = "*"
       }
-      */
     ]
     Version = "2012-10-17"
   })
