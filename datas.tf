@@ -1,3 +1,4 @@
+/*
 data "aws_iam_policy_document" "drs_deploy_gha_assume" {
   statement {
     effect = "Allow"
@@ -234,4 +235,5 @@ data "aws_iam_policy_document" "s3" {
     ]
   }
 }
+*/
 

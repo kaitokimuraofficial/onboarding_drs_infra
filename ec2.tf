@@ -1,3 +1,4 @@
+/*
 resource "aws_instance" "bastion" {
   ami                         = "ami-0c2da9ee6644f16e5"
   instance_type               = "t2.nano"
@@ -113,4 +114,4 @@ resource "aws_lb_listener" "alb_default" {
     type             = "forward"
   }
 }
-
+*/

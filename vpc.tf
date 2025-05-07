@@ -15,7 +15,7 @@ resource "aws_internet_gateway" "main" {
     Name = "main-${local.name_suffix}"
   }
 }
-
+/*
 resource "aws_subnet" "public" {
   for_each = local.public_subnets
 
@@ -193,4 +193,4 @@ resource "aws_vpc_endpoint_security_group_association" "ssm_messages" {
   vpc_endpoint_id   = aws_vpc_endpoint.private_subnets["ssm-messages"].id
   security_group_id = aws_security_group.ssh.id
 }
-
+*/

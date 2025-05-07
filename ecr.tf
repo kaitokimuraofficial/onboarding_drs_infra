@@ -1,3 +1,4 @@
+/*
 resource "aws_ecr_repository" "main" {
   name                 = "main-${local.name_suffix}"
   image_tag_mutability = "MUTABLE"
@@ -46,4 +47,5 @@ resource "aws_ecr_lifecycle_policy" "main" {
   repository = aws_ecr_repository.main.name
   policy     = data.aws_ecr_lifecycle_policy_document.main.json
 }
+*/
 

@@ -1,3 +1,4 @@
+/*
 resource "aws_db_subnet_group" "mysql" {
   name = "mysql-${local.name_suffix}"
 
@@ -37,4 +38,5 @@ resource "aws_db_instance" "mysql" {
   multi_az                      = false
   auto_minor_version_upgrade    = false
 }
+*/
 
