@@ -104,27 +104,25 @@ resource "aws_ecs_task_definition" "daily_report_system" {
     cpu_architecture        = "X86_64"
   }
 }
-/*
+
 resource "aws_ecs_service" "daily_report_system" {
-  name                   = "daily-report-system-${local.name_suffix}"
+  name                   = local.name_suffix
   cluster                = aws_ecs_cluster.main.arn
   launch_type            = "FARGATE"
-  desired_count          = 1
+  desired_count          = 0
   enable_execute_command = true
 
   task_definition = aws_ecs_task_definition.daily_report_system.arn
 
   network_configuration {
-    subnets = [
-      aws_subnet.private["private-ne-1a"].id,
-      aws_subnet.private["private-ne-1c"].id
-    ]
+    subnets = [aws_subnet.private_1a["ecs"].id]
   }
-
+  /*
   load_balancer {
     target_group_arn = aws_lb_target_group.frontend.arn
     container_name   = "frontend"
     container_port   = 80
   }
-}
 */
+}
+
