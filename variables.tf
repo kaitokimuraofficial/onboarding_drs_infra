@@ -1,5 +1,10 @@
 variable "aws_region" {
-  description = "The AWS region to deploy to"
+  description = "AWS region where this is deployed"
+  type        = string
+}
+
+variable "aws_az" {
+  description = "AWS AZ where this is deployed"
   type        = string
 }
 
