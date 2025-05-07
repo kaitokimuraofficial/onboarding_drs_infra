@@ -23,6 +23,10 @@ locals {
       "az"   = "ap-northeast-1a",
       "cidr" = "10.0.16.0/24"
     },
+    "egress" = {
+      "az"   = "ap-northeast-1a",
+      "cidr" = "10.0.242.0/24"
+    }
   }
   private_subnets_1c = {
     "db" = {
@@ -33,7 +37,7 @@ locals {
 }
 
 locals {
-  endpoints = {
+  interface = {
     "ecr-api" = {
       "type" = "Interface",
       "sn"   = "com.amazonaws.ap-northeast-1.ecr.api"
@@ -42,13 +46,10 @@ locals {
       "type" = "Interface",
       "sn"   = "com.amazonaws.ap-northeast-1.ecr.dkr"
     },
+    /*
     "logs" = {
       "type" = "Interface",
       "sn"   = "com.amazonaws.ap-northeast-1.logs"
-    },
-    "s3" = {
-      "type" = "Gateway",
-      "sn"   = "com.amazonaws.ap-northeast-1.s3"
     },
     "secrets-manager" = {
       "type" = "Interface",
@@ -62,6 +63,7 @@ locals {
       "type" = "Interface",
       "sn"   = "com.amazonaws.ap-northeast-1.ssmmessages"
     }
+    */
   }
 }
 
