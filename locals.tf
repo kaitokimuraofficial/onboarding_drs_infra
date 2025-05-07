@@ -24,6 +24,12 @@ locals {
       "cidr" = "10.0.16.0/24"
     },
   }
+  private_subnets_1c = {
+    "db" = {
+      "az"   = "ap-northeast-1c",
+      "cidr" = "10.0.17.0/24"
+    }
+  }
 }
 
 locals {
