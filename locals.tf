@@ -3,25 +3,25 @@ locals {
 }
 
 locals {
-  public_subnets = {
-    "public-ne-1a" = {
+  public_subnets_1a = {
+    "ingress" = {
       "az"   = "ap-northeast-1a",
-      "cidr" = "10.0.0.0/20"
+      "cidr" = "10.0.0.0/24"
     },
-    "public-ne-1c" = {
-      "az"   = "ap-northeast-1c",
-      "cidr" = "10.0.16.0/20"
+    "bastion" = {
+      "az"   = "ap-northeast-1a",
+      "cidr" = "10.0.240.0/24"
     }
   }
 
-  private_subnets = {
-    "private-ne-1a" = {
+  private_subnets_1a = {
+    "ecs" = {
       "az"   = "ap-northeast-1a",
-      "cidr" = "10.0.96.0/20"
+      "cidr" = "10.0.8.0/24"
     },
-    "private-ne-1c" = {
-      "az"   = "ap-northeast-1c",
-      "cidr" = "10.0.192.0/20"
+    "db" = {
+      "az"   = "ap-northeast-1a",
+      "cidr" = "10.0.16.0/24"
     },
   }
 }
