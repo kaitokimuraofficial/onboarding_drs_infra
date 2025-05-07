@@ -64,9 +64,18 @@ resource "aws_lb_target_group" "frontend" {
   name        = "frontend-${local.name_suffix}"
   vpc_id      = aws_vpc.main.id
   target_type = "ip"
+  port        = 80
+  protocol    = "HTTP"
 
-  port     = 80
-  protocol = "HTTP"
+  health_check {
+    path                = "/"
+    protocol            = "HTTP"
+    matcher             = "200-399"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
 }
 
 resource "aws_lb" "alb" {
@@ -95,7 +104,7 @@ resource "aws_lb" "alb" {
 }
 
 resource "aws_lb_listener" "alb_default" {
-  load_balancer_arn = aws_lb.alb.id
+  load_balancer_arn = aws_lb.alb.arn
   port              = "80"
   protocol          = "HTTP"
 

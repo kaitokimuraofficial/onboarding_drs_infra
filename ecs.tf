@@ -26,8 +26,8 @@ resource "aws_ecs_cluster" "main" {
 resource "aws_ecs_task_definition" "daily_report_system" {
   family                   = "daily_report_system"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = 512
-  memory                   = 1024
+  cpu                      = 1024
+  memory                   = 2048
   execution_role_arn       = aws_iam_role.ecs_task_exec.arn
   task_role_arn            = aws_iam_role.ecs_task.arn
   network_mode             = "awsvpc"
@@ -44,7 +44,7 @@ resource "aws_ecs_task_definition" "daily_report_system" {
           hostPort      = 80
         }
       ]
-      command = ["nginx", "-g", "daemon off"]
+      command = ["nginx", "-g", "daemon off;"]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -67,8 +67,9 @@ resource "aws_ecs_task_definition" "daily_report_system" {
         }
       ]
       environment = [
+        { name = "RAILS_ENV", value = "production" },
         { name = "DB_NAME", value = var.mysql_db_name },
-        { name = "DB_HOST", value = aws_db_instance.mysql.endpoint },
+        { name = "DB_HOST", value = aws_db_instance.mysql.address },
         { name = "DB_PORT", value = "3306" }
       ]
       secrets = [
@@ -85,7 +86,7 @@ resource "aws_ecs_task_definition" "daily_report_system" {
           valueFrom = "arn:aws:secretsmanager:${var.aws_region}:${var.kk_account_id}:secret:${aws_secretsmanager_secret.backend_task.name}:DB_PASSWORD::"
         }
       ]
-      command = ["/bin/sh", "-c", "bundle exec rake db:setup_seeds && bundle exec rails s -b 0.0.0.0"]
+      command = ["/bin/sh", "-c", "RAILS_ENV=production bundle exec rake db:setup_seed && RAILS_ENV=production bundle exec rails s -b 0.0.0.0"]
       logConfiguration = {
         logDriver = "awslogs"
         options = {
@@ -108,7 +109,7 @@ resource "aws_ecs_service" "daily_report_system" {
   name                   = "daily-report-system-${local.name_suffix}"
   cluster                = aws_ecs_cluster.main.arn
   launch_type            = "FARGATE"
-  desired_count          = 0
+  desired_count          = 1
   enable_execute_command = true
 
   task_definition = aws_ecs_task_definition.daily_report_system.arn
