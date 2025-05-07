@@ -30,6 +30,23 @@ resource "aws_kms_key_policy" "symmetric" {
         ]
         Resource = "*"
       },
+      {
+        Effect = "Allow"
+        Principal = {
+          Service = [
+            "ssm.amazonaws.com",
+            "ecs-tasks.amazonaws.com"
+          ]
+        }
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ]
+        Resource = "*"
+      },
       /*
       {
         Effect = "Allow"
