@@ -5,10 +5,6 @@ resource "aws_kms_key" "symmetric" {
   rotation_period_in_days = 90
 }
 
-resource "aws_kms_alias" "symmetric_alias" {
-  name          = "alias/symmetric-${local.name_suffix}"
-  target_key_id = aws_kms_key.symmetric.key_id
-}
 /*
 resource "aws_kms_key_policy" "symmetric" {
   key_id = aws_kms_key.symmetric.id
