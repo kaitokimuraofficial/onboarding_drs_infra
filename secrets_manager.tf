@@ -1,5 +1,5 @@
 resource "aws_secretsmanager_secret" "backend_task" {
-  name       = "drs/backend"
+  name       = "backend"
   kms_key_id = aws_kms_key.symmetric.arn
 }
 

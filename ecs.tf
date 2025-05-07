@@ -22,15 +22,15 @@ resource "aws_ecs_cluster" "main" {
     namespace = aws_service_discovery_http_namespace.drs.arn
   }
 }
-/*
+
 resource "aws_ecs_task_definition" "daily_report_system" {
   family                   = "daily_report_system"
   requires_compatibilities = ["FARGATE"]
   cpu                      = 1024
   memory                   = 2048
+  network_mode             = "awsvpc"
   execution_role_arn       = aws_iam_role.ecs_task_exec.arn
   task_role_arn            = aws_iam_role.ecs_task.arn
-  network_mode             = "awsvpc"
 
   container_definitions = jsonencode([
     {
@@ -104,7 +104,7 @@ resource "aws_ecs_task_definition" "daily_report_system" {
     cpu_architecture        = "X86_64"
   }
 }
-
+/*
 resource "aws_ecs_service" "daily_report_system" {
   name                   = "daily-report-system-${local.name_suffix}"
   cluster                = aws_ecs_cluster.main.arn
