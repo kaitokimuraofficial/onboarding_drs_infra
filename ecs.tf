@@ -35,7 +35,7 @@ resource "aws_ecs_task_definition" "daily_report_system" {
   container_definitions = jsonencode([
     {
       name      = "frontend"
-      image     = "${aws_ecr_repository.main.repository_url}:frontend-latest"
+      image     = "${aws_ecr_repository.main.repository_url}:frontend-latest@sha256:811c0bed670bc9e428458aa6905491294ef1a7b324ce27398bd6aad45134729a"
       cpu       = 0
       essential = true
       portMappings = [
@@ -57,7 +57,7 @@ resource "aws_ecs_task_definition" "daily_report_system" {
     },
     {
       name      = "backend"
-      image     = "${aws_ecr_repository.main.repository_url}:backend-latest"
+      image     = "${aws_ecr_repository.main.repository_url}:backend-latest@sha256:870fb97500a42d721dcf39290ddb6b107f8549368490d027f78ebf52208955f5"
       cpu       = 0
       essential = true
       portMappings = [

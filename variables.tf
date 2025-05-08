@@ -8,6 +8,11 @@ variable "aws_az" {
   type        = string
 }
 
+variable "domain_name" {
+  description = "The name of domain"
+  type        = string
+}
+
 variable "environment" {
   description = "The name of environment"
   type        = string
