@@ -105,6 +105,25 @@ resource "aws_ecs_task_definition" "daily_report_system" {
   }
 }
 
+resource "aws_security_group" "ecs_service" {
+  name   = "ecs-service-${local.name_suffix}"
+  vpc_id = aws_vpc.main.id
+
+  ingress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_ecs_service" "daily_report_system" {
   name                   = local.name_suffix
   cluster                = aws_ecs_cluster.main.arn
@@ -115,7 +134,8 @@ resource "aws_ecs_service" "daily_report_system" {
   task_definition = aws_ecs_task_definition.daily_report_system.arn
 
   network_configuration {
-    subnets = [aws_subnet.private_1a["ecs"].id]
+    subnets         = [aws_subnet.private_1a["ecs"].id]
+    security_groups = [aws_security_group.ecs_service.id]
   }
   /*
   load_balancer {
