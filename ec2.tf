@@ -67,9 +67,9 @@ resource "aws_security_group" "alb" {
   }
 
   egress {
-    from_port       = 80
-    to_port         = 80
-    protocol        = "tcp"
+    from_port       = 0
+    to_port         = 0
+    protocol        = "-1"
     security_groups = [aws_security_group.ecs_service.id]
   }
 }
@@ -79,6 +79,24 @@ resource "aws_lb_target_group" "frontend" {
   vpc_id      = aws_vpc.main.id
   target_type = "ip"
   port        = 80
+  protocol    = "HTTP"
+
+  health_check {
+    path                = "/"
+    protocol            = "HTTP"
+    matcher             = "200-399"
+    interval            = 30
+    timeout             = 5
+    healthy_threshold   = 2
+    unhealthy_threshold = 2
+  }
+}
+
+resource "aws_lb_target_group" "backend" {
+  name        = "drs-backend-1a-prod"
+  vpc_id      = aws_vpc.main.id
+  target_type = "ip"
+  port        = 3000
   protocol    = "HTTP"
 
   health_check {
@@ -112,6 +130,17 @@ resource "aws_lb_listener" "alb_default" {
 
   default_action {
     target_group_arn = aws_lb_target_group.frontend.id
+    type             = "forward"
+  }
+}
+
+resource "aws_lb_listener" "backend" {
+  load_balancer_arn = aws_lb.alb.arn
+  port              = "3000"
+  protocol          = "HTTP"
+
+  default_action {
+    target_group_arn = aws_lb_target_group.backend.id
     type             = "forward"
   }
 }
