@@ -128,7 +128,7 @@ resource "aws_ecs_service" "daily_report_system" {
   name                   = local.name_suffix
   cluster                = aws_ecs_cluster.main.arn
   launch_type            = "FARGATE"
-  desired_count          = 0
+  desired_count          = 1
   enable_execute_command = true
 
   task_definition = aws_ecs_task_definition.daily_report_system.arn
@@ -137,12 +137,17 @@ resource "aws_ecs_service" "daily_report_system" {
     subnets         = [aws_subnet.private_1a["ecs"].id]
     security_groups = [aws_security_group.ecs_service.id]
   }
-  /*
+
   load_balancer {
     target_group_arn = aws_lb_target_group.frontend.arn
     container_name   = "frontend"
     container_port   = 80
   }
-*/
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.backend.arn
+    container_name   = "backend"
+    container_port   = 3000
+  }
 }
 
