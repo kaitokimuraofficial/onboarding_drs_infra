@@ -125,8 +125,11 @@ resource "aws_lb" "alb" {
 
 resource "aws_lb_listener" "alb_default" {
   load_balancer_arn = aws_lb.alb.arn
-  port              = "80"
-  protocol          = "HTTP"
+  port              = "443"
+  protocol          = "HTTPS"
+
+  ssl_policy      = "ELBSecurityPolicy-2016-08"
+  certificate_arn = aws_acm_certificate.my_domain.arn
 
   default_action {
     target_group_arn = aws_lb_target_group.frontend.id
@@ -137,7 +140,10 @@ resource "aws_lb_listener" "alb_default" {
 resource "aws_lb_listener" "backend" {
   load_balancer_arn = aws_lb.alb.arn
   port              = "3000"
-  protocol          = "HTTP"
+  protocol          = "HTTPS"
+
+  ssl_policy      = "ELBSecurityPolicy-2016-08"
+  certificate_arn = aws_acm_certificate.my_domain.arn
 
   default_action {
     target_group_arn = aws_lb_target_group.backend.id
