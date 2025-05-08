@@ -15,7 +15,8 @@ resource "aws_security_group" "mysql" {
     to_port   = 3306
     protocol  = "tcp"
     cidr_blocks = [
-      aws_subnet.public_1a["bastion"].cidr_block
+      aws_subnet.public_1a["bastion"].cidr_block,
+      aws_subnet.private_1a["ecs"].cidr_block
     ]
   }
 }
