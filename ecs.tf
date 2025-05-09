@@ -26,8 +26,8 @@ resource "aws_ecs_cluster" "main" {
 resource "aws_ecs_task_definition" "daily_report_system" {
   family                   = "daily_report_system"
   requires_compatibilities = ["FARGATE"]
-  cpu                      = 1024
-  memory                   = 2048
+  cpu                      = 512
+  memory                   = 1024
   network_mode             = "awsvpc"
   execution_role_arn       = aws_iam_role.ecs_task_exec.arn
   task_role_arn            = aws_iam_role.ecs_task.arn
@@ -35,7 +35,7 @@ resource "aws_ecs_task_definition" "daily_report_system" {
   container_definitions = jsonencode([
     {
       name      = "frontend"
-      image     = "${aws_ecr_repository.main.repository_url}:frontend-latest@sha256:811c0bed670bc9e428458aa6905491294ef1a7b324ce27398bd6aad45134729a"
+      image     = "${aws_ecr_repository.main.repository_url}:frontend-latest"
       cpu       = 0
       essential = true
       portMappings = [
@@ -57,7 +57,7 @@ resource "aws_ecs_task_definition" "daily_report_system" {
     },
     {
       name      = "backend"
-      image     = "${aws_ecr_repository.main.repository_url}:backend-latest@sha256:870fb97500a42d721dcf39290ddb6b107f8549368490d027f78ebf52208955f5"
+      image     = "${aws_ecr_repository.main.repository_url}:backend-latest"
       cpu       = 0
       essential = true
       portMappings = [
@@ -130,9 +130,14 @@ resource "aws_ecs_service" "daily_report_system" {
   launch_type            = "FARGATE"
   desired_count          = 1
   enable_execute_command = true
+  force_new_deployment   = true
 
   task_definition = aws_ecs_task_definition.daily_report_system.arn
 
+  deployment_circuit_breaker {
+    enable   = true
+    rollback = true
+  }
   network_configuration {
     subnets         = [aws_subnet.private_1a["ecs"].id]
     security_groups = [aws_security_group.ecs_service.id]
