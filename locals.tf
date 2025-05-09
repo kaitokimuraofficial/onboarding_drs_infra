@@ -8,10 +8,6 @@ locals {
       "az"   = "ap-northeast-1a",
       "cidr" = "10.0.0.0/24"
     },
-    "bastion" = {
-      "az"   = "ap-northeast-1a",
-      "cidr" = "10.0.240.0/24"
-    }
   }
   public_subnets_1c = {
     "ingress" = {
@@ -29,10 +25,14 @@ locals {
       "az"   = "ap-northeast-1a",
       "cidr" = "10.0.16.0/24"
     },
+    "bastion" = {
+      "az"   = "ap-northeast-1a",
+      "cidr" = "10.0.240.0/24"
+    },
     "egress" = {
       "az"   = "ap-northeast-1a",
       "cidr" = "10.0.242.0/24"
-    }
+    },
   }
   private_subnets_1c = {
     "db" = {

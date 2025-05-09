@@ -128,7 +128,7 @@ resource "aws_ecs_service" "daily_report_system" {
   name                   = local.name_suffix
   cluster                = aws_ecs_cluster.main.arn
   launch_type            = "FARGATE"
-  desired_count          = 1
+  desired_count          = 0
   enable_execute_command = true
   force_new_deployment   = true
 
