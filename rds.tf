@@ -33,6 +33,7 @@ resource "aws_db_instance" "mysql" {
   db_subnet_group_name          = aws_db_subnet_group.mysql.name
   multi_az                      = false
   auto_minor_version_upgrade    = false
+  final_snapshot_identifier     = true
 
   vpc_security_group_ids = [
     aws_security_group.mysql.id
